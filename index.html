@@ -9,7 +9,7 @@
 <body>
     <div class="app-container">
         
-        <!-- Sidebar - Minimal Controls -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
                 <span class="logo-icon">🎬</span>
@@ -57,9 +57,9 @@
 
             <div class="sidebar-footer">
                 <button class="btn-small" id="clearHistory">🗑️ Clear History</button>
-                <button class="btn-small" id="themeToggle">🌙 Toggle Theme</button>
+                <button class="btn-small" id="themeToggle">🌙 Theme</button>
                 <div class="status">
-                    <span class="status-dot"></span> Ready
+                    <span class="status-dot"></span> <span id="statusText">Ready</span>
                 </div>
             </div>
         </aside>
@@ -70,7 +70,7 @@
             <!-- Header -->
             <header class="header">
                 <div>
-                    <h2 id="projectTitle">Ready to Generate Viral Script</h2>
+                    <h2 id="projectTitle">Viral Video Script Generator</h2>
                     <p id="projectSpecs">3 clips × 8 seconds = 24 second viral video</p>
                 </div>
                 <div class="header-actions">
@@ -91,11 +91,12 @@
                     <div class="placeholder-icon">🎬</div>
                     <h3>Professional Viral Video Script Generator</h3>
                     <div class="features">
-                        <div class="feature">✓ 3 scenes with complete AI-ready prompts</div>
-                        <div class="feature">✓ Visual consistency across all clips</div>
-                        <div class="feature">✓ Voiceover scripts included</div>
-                        <div class="feature">✓ Copy individual clips or entire script</div>
-                        <div class="feature">✓ Ready for RunwayML, Pika, Midjourney</div>
+                        <div class="feature">✓ 30 viral categories with proven engagement</div>
+                        <div class="feature">✓ Complete AI-ready prompts for each clip</div>
+                        <div class="feature">✓ Visual consistency across all 3 clips</div>
+                        <div class="feature">✓ Voiceover scripts in English & Bangla</div>
+                        <div class="feature">✓ Ready for RunwayML, Pika, Midjourney, Leonardo</div>
+                        <div class="feature">✓ 5 viral rules embedded in every script</div>
                     </div>
                     <p class="hint">👈 Select category and tone, then click Generate</p>
                 </div>
@@ -106,7 +107,7 @@
 
             <!-- History Bar -->
             <div class="history-bar" id="historyBar">
-                <h4>📚 Recent Scripts</h4>
+                <h4>📚 Recent Scripts (Click to reload)</h4>
                 <div class="history-items" id="historyItems"></div>
             </div>
         </main>
