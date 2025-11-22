@@ -32,9 +32,9 @@ const CATEGORIES = [
 ];
 
 const VIRAL_RULES = {
-    shock: { weight: 25, desc: "Instant hook/twist" },
-    visual: { weight: 20, desc: "Ultra-visual clarity" },
-    weird: { weight: 20, desc: "Relatable but weird" },
-    loop: { weight: 20, desc: "Loopable/replayable" },
-    emotion: { weight: 15, desc: "Emotional hook + curiosity" }
+    1: "Instant shock — 'wait what?' in first 2 seconds",
+    2: "Ultra-visual — viewer sees it instantly",
+    3: "Relatable but weird — familiar becomes impossible",
+    4: "Loopable — Clip 3 returns to Clip 1",
+    5: "Emotional hook — funny/cute/creepy/OMG"
 };
