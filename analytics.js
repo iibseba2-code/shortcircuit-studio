@@ -22,88 +22,57 @@ class AnalyticsEngine {
     }
 
     scoreShock(script) {
-        const clip1Text = script.clips[0].text.toLowerCase();
-        const shockWords = ['until', 'suddenly', 'freeze', 'impossible', 'wait', 'what'];
-        const count = shockWords.filter(word => clip1Text.includes(word)).length;
-        return Math.min(100, 70 + (count * 10));
+        const clip1 = script.clips[0];
+        const shockWords = ['impossible', 'suddenly', 'never', 'glows', 'reveals'];
+        let score = 75;
+        
+        const text = clip1.sceneDescription + clip1.action;
+        shockWords.forEach(word => {
+            if (text.toLowerCase().includes(word)) score += 5;
+        });
+        
+        return Math.min(100, score);
     }
 
     scoreVisual(script) {
         let score = 80;
         script.clips.forEach(clip => {
-            if (clip.visualCue && clip.visualCue.length > 20) score += 5;
-            if (clip.text.match(/\b(color|glow|light|dark|bright)\b/i)) score += 5;
+            if (clip.camera && clip.lighting) score += 5;
+            if (clip.aiPrompt && clip.aiPrompt.length > 100) score += 5;
         });
         return Math.min(100, score);
     }
 
     scoreWeird(script) {
-        const weirdActions = ['transform', 'multiply', 'float', 'reverse', 'portal', 'glitch'];
-        let score = 75;
+        const weirdWords = ['impossible', 'distorts', 'reality', 'physics', 'transforms'];
+        let score = 70;
+        
         script.clips.forEach(clip => {
-            weirdActions.forEach(action => {
-                if (clip.text.toLowerCase().includes(action)) score += 5;
+            weirdWords.forEach(word => {
+                if (clip.sceneDescription.toLowerCase().includes(word)) score += 3;
             });
         });
+        
         return Math.min(100, score);
     }
 
     scoreLoop(script) {
-        const clip1Words = script.clips[0].text.toLowerCase().split(' ');
-        const clip3Words = script.clips[2].text.toLowerCase().split(' ');
-        const commonWords = clip1Words.filter(word => 
-            clip3Words.includes(word) && word.length > 4
+        const clip1 = script.clips[0].sceneDescription.toLowerCase();
+        const clip3 = script.clips[2].sceneDescription.toLowerCase();
+        
+        const commonWords = clip1.split(' ').filter(word => 
+            clip3.includes(word) && word.length > 4
         );
-        return Math.min(100, 70 + (commonWords.length * 10));
+        
+        return Math.min(100, 75 + (commonWords.length * 5));
     }
 
     scoreEmotion(script) {
-        const emotionWords = ['feel', 'heart', 'soul', 'memory', 'fear', 'love', 'wonder'];
-        let count = 0;
+        let score = 75;
         script.clips.forEach(clip => {
-            emotionWords.forEach(word => {
-                if (clip.text.toLowerCase().includes(word)) count++;
-            });
+            if (clip.emotion) score += 5;
+            if (clip.audio) score += 5;
         });
-        return Math.min(100, 80 + (count * 5));
-    }
-
-    getUploadTimes() {
-        return [
-            {
-                label: "Morning Prime (BD)",
-                est: "4:00 AM - 6:00 AM",
-                bst: "3:00 PM - 5:00 PM",
-                audience: "Afternoon re-scroll (Bangladesh)"
-            },
-            {
-                label: "Lunch Rush (USA)",
-                est: "12:00 PM - 2:00 PM",
-                bst: "11:00 PM - 1:00 AM",
-                audience: "Lunch break + Night scroll (BD)"
-            },
-            {
-                label: "Evening Prime (USA)",
-                est: "7:00 PM - 10:00 PM",
-                bst: "6:00 AM - 9:00 AM",
-                audience: "Prime time + Morning commute (BD)"
-            }
-        ];
-    }
-
-    updateAverageScore(newScore) {
-        let scores = JSON.parse(localStorage.getItem('scs_scores') || '[]');
-        scores.push(newScore);
-        if (scores.length > 40) scores = scores.slice(-40);
-        localStorage.setItem('scs_scores', JSON.stringify(scores));
-        
-        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-        return Math.round(avg);
-    }
-
-    getAverageScore() {
-        const scores = JSON.parse(localStorage.getItem('scs_scores') || '[]');
-        if (scores.length === 0) return 0;
-        return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+        return Math.min(100, score);
     }
 }

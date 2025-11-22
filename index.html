@@ -3,191 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShortCircuit Studio v13 | Viral Script Generator</title>
+    <title>ShortCircuit Studio v13 — Cinematic Script Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">
-            <span class="logo-icon">⚡</span>
-            <h1>ShortCircuit Studio v13</h1>
-        </div>
-        <div class="header-right">
-            <div class="time-display" id="timeDisplay">
-                <span class="time-label">EST:</span> <span id="timeEST"></span>
-                <span class="time-label">BST:</span> <span id="timeBST"></span>
-            </div>
-            <div class="status-dot" id="statusDot" title="System Status"></div>
-            <button class="settings-btn" id="settingsBtn">⚙️</button>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
-        </div>
-    </header>
-
     <!-- Main Container -->
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
+    <div class="app-container">
+        
+        <!-- Left Sidebar - All Controls -->
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <h3>⚙️ Settings</h3>
-                <button class="close-sidebar" id="closeSidebar">✕</button>
-            </div>
-            
-            <div class="settings-section">
-                <label>🎨 Accent Color</label>
-                <div class="color-picker">
-                    <button class="color-btn" data-color="green" style="background: #00c853"></button>
-                    <button class="color-btn" data-color="blue" style="background: #0077ff"></button>
-                    <button class="color-btn active" data-color="magenta" style="background: #ff4081"></button>
+                <div class="logo">
+                    <span class="logo-icon">🎬</span>
+                    <h1>ShortCircuit<br><span>Studio v13</span></h1>
                 </div>
             </div>
 
-            <div class="settings-section">
-                <label>🔑 Hugging Face API Key</label>
-                <input type="password" id="hfApiKey" placeholder="Optional for TTS">
+            <!-- Category Selection -->
+            <div class="control-section">
+                <label class="control-label">📂 Video Category</label>
+                <select id="categorySelect" class="control-input">
+                    <option value="">Choose category...</option>
+                </select>
             </div>
 
-            <div class="settings-section">
-                <label>🔑 Replicate API Key</label>
-                <input type="password" id="replicateApiKey" placeholder="Optional for TTS">
+            <!-- Tone -->
+            <div class="control-section">
+                <label class="control-label">🎭 Emotional Tone</label>
+                <select id="toneSelect" class="control-input">
+                    <option>Cinematic Epic</option>
+                    <option>Dark Mystery</option>
+                    <option>Warm Emotional</option>
+                    <option>Surreal Dream</option>
+                    <option>Horror Tension</option>
+                    <option>Comedy Bright</option>
+                    <option>Sci-Fi Future</option>
+                    <option>Fantasy Magic</option>
+                </select>
             </div>
 
-            <div class="settings-section">
-                <label>🌍 Default Language</label>
-                <select id="defaultLang">
+            <!-- Visual Style -->
+            <div class="control-section">
+                <label class="control-label">🎨 Visual Style</label>
+                <select id="visualStyle" class="control-input">
+                    <option>Hyper Realistic</option>
+                    <option>Cinematic Film</option>
+                    <option>Anime Studio</option>
+                    <option>3D Pixar</option>
+                    <option>Oil Painting</option>
+                    <option>Noir Black & White</option>
+                </select>
+            </div>
+
+            <!-- Camera Style -->
+            <div class="control-section">
+                <label class="control-label">📹 Camera Movement</label>
+                <select id="cameraStyle" class="control-input">
+                    <option>Dynamic Tracking</option>
+                    <option>Static Cinematic</option>
+                    <option>Handheld POV</option>
+                    <option>Aerial Drone</option>
+                    <option>Slow Motion</option>
+                    <option>Time Lapse</option>
+                </select>
+            </div>
+
+            <!-- Lighting -->
+            <div class="control-section">
+                <label class="control-label">💡 Lighting Setup</label>
+                <select id="lightingSetup" class="control-input">
+                    <option>Golden Hour Warm</option>
+                    <option>Blue Hour Cool</option>
+                    <option>Neon Night</option>
+                    <option>Soft Studio</option>
+                    <option>Hard Dramatic</option>
+                    <option>Natural Daylight</option>
+                    <option>Moody Dark</option>
+                </select>
+            </div>
+
+            <!-- Audio Type -->
+            <div class="control-section">
+                <label class="control-label">🎵 Audio Type</label>
+                <select id="audioType" class="control-input">
+                    <option value="dialogue">Dialogue + Music</option>
+                    <option value="music">Music Only</option>
+                    <option value="narration">Voice Narration</option>
+                </select>
+            </div>
+
+            <!-- Voice Language -->
+            <div class="control-section">
+                <label class="control-label">🗣️ Voice Language</label>
+                <select id="voiceLanguage" class="control-input">
                     <option value="en">English</option>
                     <option value="bn">Bangla</option>
                 </select>
             </div>
 
-            <button class="save-settings-btn" id="saveSettings">💾 Save Settings</button>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="generateBtn">
+                    ✨ Generate Script
+                </button>
+                <button class="btn btn-secondary" id="remixBtn">
+                    🔄 Remix Scene
+                </button>
+            </div>
+
+            <!-- Settings -->
+            <div class="control-section" style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <label class="control-label">⚙️ Settings</label>
+                <button class="btn btn-small" id="clearHistory">🗑️ Clear History</button>
+                <button class="btn btn-small" id="themeToggle">🌙 Toggle Theme</button>
+            </div>
+
+            <!-- Status -->
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>System Ready</span>
+                </div>
+            </div>
         </aside>
 
-        <!-- Main Panel -->
-        <main class="main-panel">
-            <!-- Control Panel -->
-            <div class="control-panel">
-                <div class="control-row">
-                    <div class="control-group">
-                        <label>📂 Category</label>
-                        <select id="categorySelect"></select>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Header Bar -->
+            <header class="content-header">
+                <div class="header-info">
+                    <h2 id="currentCategory">Ready to Generate</h2>
+                    <p id="currentSpecs">Select category and click Generate</p>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="copyBtn" title="Copy Script">📋</button>
+                    <button class="icon-btn" id="downloadBtn" title="Download TXT">💾</button>
+                    <div class="score-badge" id="scoreBadge" style="display: none;">
+                        <span class="score-label">Viral Score</span>
+                        <span class="score-value" id="scoreValue">--</span>
                     </div>
-                    
-                    <div class="control-group">
-                        <label>🎭 Tone</label>
-                        <select id="toneSelect">
-                            <option>Funny</option>
-                            <option>Creepy</option>
-                            <option>Cute</option>
-                            <option>OMG</option>
-                            <option>Mysterious</option>
-                            <option>Emotional</option>
-                        </select>
-                    </div>
+                </div>
+            </header>
+
+            <!-- Script Display Area -->
+            <div class="script-area" id="scriptArea">
+                
+                <!-- Placeholder -->
+                <div class="placeholder" id="placeholder">
+                    <div class="placeholder-icon">🎬</div>
+                    <h3>Professional Cinematic Script Generator</h3>
+                    <p>Generate ultra-detailed, AI-ready video scripts with:</p>
+                    <ul class="feature-list">
+                        <li>✓ Detailed camera angles & movements</li>
+                        <li>✓ Professional lighting setups</li>
+                        <li>✓ Character dialogues & actions</li>
+                        <li>✓ Consistent visual style across all clips</li>
+                        <li>✓ Ready for RunwayML, Pika, Midjourney</li>
+                    </ul>
+                    <p class="hint">👈 Select options from sidebar and click Generate</p>
                 </div>
 
-                <div class="control-row">
-                    <div class="control-group">
-                        <label>🎵 Music Style</label>
-                        <select id="musicSelect">
-                            <option>Ambient Tension</option>
-                            <option>Lo-Fi Chill</option>
-                            <option>Synth Wave</option>
-                            <option>Piano Minimal</option>
-                            <option>Ethnic Fusion</option>
-                            <option>None</option>
-                        </select>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>🗣️ Voice Language</label>
-                        <select id="voiceLangSelect">
-                            <option value="none">None (Music Only)</option>
-                            <option value="en">English TTS</option>
-                            <option value="bn">Bangla TTS</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="control-row">
-                    <div class="control-group">
-                        <label>🔌 API Provider</label>
-                        <select id="apiProvider">
-                            <option value="none">None (Offline)</option>
-                            <option value="huggingface">Hugging Face</option>
-                            <option value="replicate">Replicate</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="generateBtn">
-                        ✨ Generate Script
-                    </button>
-                    <button class="btn btn-secondary" id="remixBtn">
-                        🔄 Remix
-                    </button>
-                    <button class="btn btn-clear" id="clearBtn">
-                        🗑️ Clear
-                    </button>
-                </div>
-            </div>
-
-            <!-- Analytics Card -->
-            <div class="analytics-card" id="analyticsCard" style="display: none;">
-                <div class="analytics-header">
-                    <h3>📊 Viral Score</h3>
-                    <div class="score-display" id="scoreDisplay">--</div>
-                </div>
-                <div class="score-breakdown" id="scoreBreakdown"></div>
-                <div class="upload-times">
-                    <h4>⏰ Optimal Upload Times</h4>
-                    <div class="time-grid" id="timeGrid"></div>
-                </div>
-            </div>
-
-            <!-- Script Output -->
-            <div class="script-output">
-                <div class="output-header">
-                    <h3>📝 Generated Script</h3>
-                    <div class="output-actions">
-                        <button class="icon-btn" id="copyBtn" title="Copy to Clipboard">📋</button>
-                        <button class="icon-btn" id="downloadBtn" title="Download TXT">💾</button>
-                    </div>
-                </div>
-                <div class="script-container">
-                    <div class="script-placeholder" id="scriptPlaceholder">
-                        <div class="placeholder-icon">⚡</div>
-                        <p>Your viral script will appear here...</p>
-                        <p class="placeholder-hint">Choose a category and hit Generate!</p>
-                    </div>
-                    <div class="script-content" id="scriptContent" style="display: none;"></div>
-                </div>
+                <!-- Generated Script -->
+                <div class="script-content" id="scriptContent" style="display: none;"></div>
             </div>
 
             <!-- History Section -->
-            <div class="history-section">
+            <div class="history-panel" id="historyPanel">
                 <div class="history-header">
-                    <h3>📚 Recent Scripts (Last 30)</h3>
-                    <button class="icon-btn" id="clearHistory" title="Clear History">🗑️</button>
+                    <h3>📚 Recent Scripts</h3>
+                    <button class="collapse-btn" id="collapseHistory">−</button>
                 </div>
-                <div class="history-list" id="historyList">
-                    <p class="history-empty">No scripts generated yet</p>
-                </div>
+                <div class="history-list" id="historyList"></div>
             </div>
+
         </main>
     </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
-    <!-- Load Scripts -->
+    <!-- Scripts -->
     <script src="categories.js"></script>
     <script src="storage.js"></script>
-    <script src="generator.js"></script>
     <script src="analytics.js"></script>
-    <script src="audio.js"></script>
+    <script src="generator.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

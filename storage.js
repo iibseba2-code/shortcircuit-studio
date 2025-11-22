@@ -23,10 +23,6 @@ class StorageManager {
         }
     }
 
-    remove(key) {
-        localStorage.removeItem(this.prefix + key);
-    }
-
     saveHistory(script) {
         let history = this.load('history') || [];
         const scriptHash = this.hashScript(script);

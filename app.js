@@ -1,122 +1,24 @@
-let storage, generator, analytics, audio;
+let storage, generator, analytics;
 let currentScript = null;
 
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     storage = new StorageManager();
-    generator = new ScriptGenerator();
+    generator = new CinematicScriptGenerator();
     analytics = new AnalyticsEngine();
-    audio = new AudioManager();
 
     loadSettings();
     populateCategories();
     setupEventListeners();
-    updateTimeDisplay();
-    setInterval(updateTimeDisplay, 1000);
     displayHistory();
 
-    showToast('✨ ShortCircuit Studio v13 Ready!', 'success');
+    showToast('🎬 Cinematic Script Generator Ready!');
 }
 
 function loadSettings() {
     const theme = storage.load('theme') || 'dark';
-    const accent = storage.load('accent') || 'magenta';
-    const hfKey = storage.load('hfApiKey') || '';
-    const repKey = storage.load('replicateApiKey') || '';
-    const lang = storage.load('defaultLang') || 'en';
-
     document.body.setAttribute('data-theme', theme);
-    document.body.setAttribute('data-accent', accent);
-    
-    document.getElementById('hfApiKey').value = hfKey;
-    document.getElementById('replicateApiKey').value = repKey;
-    document.getElementById('defaultLang').value = lang;
-
-    if (hfKey) audio.setAPIKey('huggingface', hfKey);
-    if (repKey) audio.setAPIKey('replicate', repKey);
-
-    document.querySelectorAll('.color-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.color === accent);
-    });
-
-    updateThemeIcon(theme);
-}
-
-function saveSettings() {
-    const hfKey = document.getElementById('hfApiKey').value;
-    const repKey = document.getElementById('replicateApiKey').value;
-    const lang = document.getElementById('defaultLang').value;
-
-    storage.save('hfApiKey', hfKey);
-    storage.save('replicateApiKey', repKey);
-    storage.save('defaultLang', lang);
-
-    if (hfKey) audio.setAPIKey('huggingface', hfKey);
-    if (repKey) audio.setAPIKey('replicate', repKey);
-
-    showToast('💾 Settings saved successfully!', 'success');
-    closeSidebar();
-}
-
-function setupEventListeners() {
-    document.getElementById('settingsBtn').addEventListener('click', openSidebar);
-    document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
-    document.getElementById('saveSettings').addEventListener('click', saveSettings);
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-    document.querySelectorAll('.color-btn').forEach(btn => {
-        btn.addEventListener('click', () => setAccent(btn.dataset.color));
-    });
-
-    document.getElementById('generateBtn').addEventListener('click', generateScript);
-    document.getElementById('remixBtn').addEventListener('click', remixScript);
-    document.getElementById('clearBtn').addEventListener('click', clearScript);
-    document.getElementById('copyBtn').addEventListener('click', copyScript);
-    document.getElementById('downloadBtn').addEventListener('click', downloadScript);
-    document.getElementById('clearHistory').addEventListener('click', clearHistoryConfirm);
-}
-
-function openSidebar() {
-    document.getElementById('sidebar').classList.add('active');
-}
-
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('active');
-}
-
-function toggleTheme() {
-    const current = document.body.getAttribute('data-theme');
-    const newTheme = current === 'dark' ? 'light' : 'dark';
-    document.body.setAttribute('data-theme', newTheme);
-    storage.save('theme', newTheme);
-    updateThemeIcon(newTheme);
-}
-
-function updateThemeIcon(theme) {
-    document.getElementById('themeToggle').textContent = theme === 'dark' ? '☀️' : '🌙';
-}
-
-function setAccent(color) {
-    document.body.setAttribute('data-accent', color);
-    storage.save('accent', color);
-    
-    document.querySelectorAll('.color-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.color === color);
-    });
-}
-
-function updateTimeDisplay() {
-    const now = new Date();
-    
-    const estTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-    const estStr = estTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    
-    const bstTime = new Date(estTime.getTime() + (11 * 60 * 60 * 1000));
-    const bstStr = bstTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    
-    document.getElementById('timeEST').textContent = estStr;
-    document.getElementById('timeBST').textContent = bstStr;
 }
 
 function populateCategories() {
@@ -129,31 +31,49 @@ function populateCategories() {
     });
 }
 
+function setupEventListeners() {
+    document.getElementById('generateBtn').addEventListener('click', generateScript);
+    document.getElementById('remixBtn').addEventListener('click', remixScript);
+    document.getElementById('copyBtn').addEventListener('click', copyScript);
+    document.getElementById('downloadBtn').addEventListener('click', downloadScript);
+    document.getElementById('clearHistory').addEventListener('click', clearHistoryConfirm);
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    document.getElementById('collapseHistory').addEventListener('click', toggleHistory);
+}
+
 function generateScript() {
     const category = document.getElementById('categorySelect').value;
     const tone = document.getElementById('toneSelect').value;
-    const music = document.getElementById('musicSelect').value;
-    const voiceLang = document.getElementById('voiceLangSelect').value;
-    const apiProvider = document.getElementById('apiProvider').value;
+    const visualStyle = document.getElementById('visualStyle').value;
+    const lighting = document.getElementById('lightingSetup').value;
+    const camera = document.getElementById('cameraStyle').value;
+    const audioType = document.getElementById('audioType').value;
+    const voiceLang = document.getElementById('voiceLanguage').value;
 
     if (!category) {
-        showToast('⚠️ Please select a category', 'warning');
+        showToast('⚠️ Please select a category');
         return;
     }
 
-    showToast('⚡ Generating your viral script...', 'info');
+    showToast('🎬 Generating cinematic script...');
 
-    const seed = generator.generateSeed(category, tone);
-    const script = generator.generateScript(seed, music);
+    // Generate master prompt
+    const masterPrompt = generator.generateMasterPrompt(category, tone, visualStyle, lighting);
+    
+    // Generate full script
+    const script = generator.generateFullScript(masterPrompt, camera, audioType, voiceLang);
     
     currentScript = script;
-    generator.currentSeed = seed;
+    generator.currentSeed = masterPrompt;
 
-    displayScript(script, voiceLang, apiProvider);
+    // Display
+    displayScript(script);
 
+    // Calculate score
     const score = analytics.calculateViralScore(script);
-    displayAnalytics(score);
+    displayScore(score);
 
+    // Save to history
     storage.saveHistory({
         ...script,
         score: score.total
@@ -161,223 +81,260 @@ function generateScript() {
 
     displayHistory();
 
-    showToast('✅ Script generated successfully!', 'success');
+    // Update header
+    document.getElementById('currentCategory').textContent = category;
+    document.getElementById('currentSpecs').textContent = `${tone} • ${visualStyle} • ${lighting}`;
+
+    showToast('✅ Script generated successfully!');
 }
 
-function remixScript() {
-    if (!generator.currentSeed) {
-        showToast('⚠️ Generate a script first!', 'warning');
-        return;
-    }
-
-    const music = document.getElementById('musicSelect').value;
-    const voiceLang = document.getElementById('voiceLangSelect').value;
-    const apiProvider = document.getElementById('apiProvider').value;
-
-    showToast('🔄 Remixing with new emotion arc...', 'info');
-
-    const newSeed = generator.remix(generator.currentSeed);
-    const script = generator.generateScript(newSeed, music);
-
-    currentScript = script;
-    generator.currentSeed = newSeed;
-
-    displayScript(script, voiceLang, apiProvider);
-
-    const score = analytics.calculateViralScore(script);
-    displayAnalytics(score);
-
-    storage.saveHistory({
-        ...script,
-        score: score.total
-    });
-
-    displayHistory();
-
-    showToast('✅ Script remixed!', 'success');
-}
-
-function clearScript() {
-    document.getElementById('scriptPlaceholder').style.display = 'block';
-    document.getElementById('scriptContent').style.display = 'none';
-    document.getElementById('analyticsCard').style.display = 'none';
-    currentScript = null;
-    showToast('🗑️ Script cleared', 'info');
-}
-
-function displayScript(script, voiceLang, apiProvider) {
-    document.getElementById('scriptPlaceholder').style.display = 'none';
+function displayScript(script) {
+    document.getElementById('placeholder').style.display = 'none';
     const container = document.getElementById('scriptContent');
     container.style.display = 'block';
     container.innerHTML = '';
 
-    const seedDiv = document.createElement('div');
-    seedDiv.className = 'clip-section';
-    seedDiv.innerHTML = `
-        <div class="clip-header">🌱 Consistency Seed</div>
-        <div class="clip-text"><strong>Object:</strong> ${script.seed.primaryObject}</div>
-        <div class="clip-text"><strong>Location:</strong> ${script.seed.location}</div>
-        <div class="clip-text"><strong>Palette:</strong> ${script.seed.palette}</div>
-        <div class="clip-text"><strong>Sound:</strong> ${script.seed.ambientSound}</div>
-        <div class="clip-text"><strong>Emotion Arc:</strong> ${script.seed.emotionArc.join(' → ')}</div>
+    // Master Prompt Section
+    const masterSection = document.createElement('div');
+    masterSection.className = 'master-prompt';
+    masterSection.innerHTML = `
+        <h3>🎯 MASTER PROMPT — Consistent Visual Style</h3>
+        <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+            Apply these settings to ALL three clips for visual consistency:
+        </p>
+        <div class="prompt-grid">
+            <div class="prompt-item">
+                <strong>Primary Object</strong>
+                ${script.masterPrompt.primaryObject}
+            </div>
+            <div class="prompt-item">
+                <strong>Location</strong>
+                ${script.masterPrompt.location}
+            </div>
+            <div class="prompt-item">
+                <strong>Visual Style</strong>
+                ${script.masterPrompt.visualStyle}
+            </div>
+            <div class="prompt-item">
+                <strong>Lighting</strong>
+                ${script.masterPrompt.lighting}
+            </div>
+            <div class="prompt-item">
+                <strong>Color Palette</strong>
+                ${script.masterPrompt.colorPalette.primary} + ${script.masterPrompt.colorPalette.secondary}
+            </div>
+            <div class="prompt-item">
+                <strong>Aspect Ratio</strong>
+                ${script.masterPrompt.aspectRatio}
+            </div>
+            <div class="prompt-item">
+                <strong>Resolution</strong>
+                ${script.masterPrompt.resolution}
+            </div>
+            <div class="prompt-item">
+                <strong>FPS</strong>
+                ${script.masterPrompt.fps}
+            </div>
+        </div>
+        <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+            <strong style="color: var(--accent);">AI Video Prompt Base:</strong>
+            <p style="margin-top: 0.5rem;">${script.masterPrompt.styleKeywords}</p>
+        </div>
+        <div style="margin-top: 1rem;">
+            <strong style="color: var(--accent);">Emotional Arc:</strong>
+            ${script.masterPrompt.emotionArc.join(' → ')}
+        </div>
     `;
-    container.appendChild(seedDiv);
+    container.appendChild(masterSection);
 
-    const musicDiv = document.createElement('div');
-    musicDiv.className = 'clip-section';
-    musicDiv.innerHTML = `
-        <div class="clip-header">🎵 Music</div>
-        <div class="clip-text">${audio.getMusicCue(script.music)}</div>
-    `;
-    container.appendChild(musicDiv);
-
+    // Individual Clips
     script.clips.forEach((clip, index) => {
-        const clipDiv = document.createElement('div');
-        clipDiv.className = 'clip-section';
-        clipDiv.innerHTML = `
-            <div class="clip-header">🎞 Clip ${index + 1} (${index * 8}-${(index + 1) * 8}s)</div>
-            <div class="clip-text">${clip.text}</div>
-            <div class="clip-meta">
-                <span><strong>Visual:</strong> ${clip.visualCue}</span>
-                <span><strong>Sound:</strong> ${clip.soundCue}</span>
-                <span><strong>Emotion:</strong> ${clip.emotion}</span>
+        const clipCard = document.createElement('div');
+        clipCard.className = 'clip-card';
+        
+        clipCard.innerHTML = `
+            <div class="clip-header">
+                <span class="clip-title">🎬 ${clip.title}</span>
+                <span class="clip-duration">${clip.duration}</span>
+            </div>
+
+            <!-- Scene Description -->
+            <div class="section">
+                <div class="section-title">📖 Scene Description</div>
+                <div class="section-content">${clip.sceneDescription}</div>
+            </div>
+
+            <!-- Camera Work -->
+            <div class="section">
+                <div class="section-title">📹 Camera Setup</div>
+                <div class="tech-specs">
+                    <div class="spec-item">
+                        <div class="spec-label">Angle</div>
+                        <div class="spec-value">${clip.camera.angle}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Movement</div>
+                        <div class="spec-value">${clip.camera.movement}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Framing</div>
+                        <div class="spec-value">${clip.camera.framing}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Focus</div>
+                        <div class="spec-value">${clip.camera.focus}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Transition</div>
+                        <div class="spec-value">${clip.camera.transition}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lighting -->
+            <div class="section">
+                <div class="section-title">💡 Lighting Details</div>
+                <div class="tech-specs">
+                    <div class="spec-item">
+                        <div class="spec-label">Setup</div>
+                        <div class="spec-value">${clip.lighting.setup}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Direction</div>
+                        <div class="spec-value">${clip.lighting.direction}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Mood</div>
+                        <div class="spec-value">${clip.lighting.mood}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Shadows</div>
+                        <div class="spec-value">${clip.lighting.shadows}</div>
+                    </div>
+                    <div class="spec-item">
+                        <div class="spec-label">Practical Lights</div>
+                        <div class="spec-value">${clip.lighting.practical}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action -->
+            <div class="section">
+                <div class="section-title">🎭 Action & Performance</div>
+                <div class="section-content">${clip.action}</div>
+            </div>
+
+            <!-- Audio -->
+            <div class="section">
+                <div class="section-title">🎵 Audio</div>
+                ${formatAudio(clip.audio)}
+            </div>
+
+            <!-- AI Prompt -->
+            <div class="section">
+                <div class="section-title">🤖 AI Video Generator Prompt</div>
+                <div class="section-content" style="background: var(--bg-primary); border-left: 3px solid var(--accent); font-family: monospace; font-size: 0.9rem;">
+                    ${clip.aiPrompt}
+                </div>
+            </div>
+
+            <!-- Emotional Beat -->
+            <div class="section">
+                <div class="section-title">❤️ Emotional Beat</div>
+                <div class="section-content">${clip.emotion}</div>
             </div>
         `;
-        container.appendChild(clipDiv);
-
-        if (voiceLang !== 'none') {
-            const voiceDiv = document.createElement('div');
-            voiceDiv.className = 'clip-text';
-            voiceDiv.innerHTML = `<em>🗣️ Voice: ${voiceLang === 'en' ? 'English' : 'Bangla'} (${apiProvider})</em>`;
-            clipDiv.appendChild(voiceDiv);
-        }
+        
+        container.appendChild(clipCard);
     });
 }
 
-function displayAnalytics(score) {
-    const card = document.getElementById('analyticsCard');
-    card.style.display = 'block';
-
-    document.getElementById('scoreDisplay').textContent = score.total;
-
-    const breakdown = document.getElementById('scoreBreakdown');
-    breakdown.innerHTML = '';
-    
-    Object.entries(score.breakdown).forEach(([key, value]) => {
-        const item = document.createElement('div');
-        item.className = 'score-item';
-        item.innerHTML = `
-            <div class="score-label">${VIRAL_RULES[key].desc}</div>
-            <div class="score-value">${value}</div>
+function formatAudio(audio) {
+    if (audio.type === 'dialogue') {
+        let html = '<div>';
+        audio.lines.forEach(line => {
+            html += `
+                <div class="dialogue-block">
+                    <div class="character-name">${line.character}</div>
+                    <div class="dialogue-text">${line.text}</div>
+                </div>
+            `;
+        });
+        html += `<div class="music-cue">🎵 ${audio.musicUnderscore}</div>`;
+        html += '</div>';
+        return html;
+    } else if (audio.type === 'narration') {
+        return `
+            <div class="dialogue-block">
+                <div class="character-name">NARRATOR (${audio.language.toUpperCase()})</div>
+                <div class="dialogue-text">${audio.script}</div>
+            </div>
+            <div class="music-cue">🎵 ${audio.musicUnderscore}</div>
         `;
-        breakdown.appendChild(item);
-    });
-
-    const timeGrid = document.getElementById('timeGrid');
-    timeGrid.innerHTML = '';
-    
-    analytics.getUploadTimes().forEach(slot => {
-        const item = document.createElement('div');
-        item.className = 'time-slot';
-        item.innerHTML = `
-            <div class="time-slot-label">${slot.label}</div>
-            <div class="time-slot-value">EST: ${slot.est}</div>
-            <div class="time-slot-value">BST: ${slot.bst}</div>
-            <div class="clip-text" style="margin-top: 0.5rem; font-size: 0.85rem;">${slot.audience}</div>
+    } else {
+        return `
+            <div class="music-cue">🎵 ${audio.track}</div>
+            <div class="music-cue">🔊 SFX: ${audio.soundEffects}</div>
         `;
-        timeGrid.appendChild(item);
-    });
-
-    const avg = analytics.updateAverageScore(score.total);
-    console.log(`Session average: ${avg}`);
+    }
 }
 
-function displayHistory() {
-    const container = document.getElementById('historyList');
-    const history = storage.getHistory();
+function displayScore(score) {
+    document.getElementById('scoreBadge').style.display = 'flex';
+    document.getElementById('scoreValue').textContent = score.total;
+}
 
-    if (history.length === 0) {
-        container.innerHTML = '<p class="history-empty">No scripts generated yet</p>';
+function remixScript() {
+    if (!generator.currentSeed) {
+        showToast('⚠️ Generate a script first!');
         return;
     }
 
-    container.innerHTML = '';
+    const camera = document.getElementById('cameraStyle').value;
+    const audioType = document.getElementById('audioType').value;
+    const voiceLang = document.getElementById('voiceLanguage').value;
 
-    history.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        
-        const date = new Date(item.timestamp);
-        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-        
-        div.innerHTML = `
-            <div class="history-item-header">
-                <span class="history-category">${item.metadata.category}</span>
-                <span class="history-date">${dateStr}</span>
-            </div>
-            <div class="history-preview">${item.clips[0].text.substring(0, 80)}...</div>
-            <div class="history-preview" style="margin-top: 0.25rem; color: var(--accent);">
-                Score: ${item.score || '--'}
-            </div>
-        `;
-        
-        div.addEventListener('click', () => loadHistoryItem(item));
-        container.appendChild(div);
+    showToast('🔄 Remixing with new emotional arc...');
+
+    const newSeed = generator.remix(generator.currentSeed);
+    const script = generator.generateFullScript(newSeed, camera, audioType, voiceLang);
+
+    currentScript = script;
+    generator.currentSeed = newSeed;
+
+    displayScript(script);
+
+    const score = analytics.calculateViralScore(script);
+    displayScore(score);
+
+    storage.saveHistory({
+        ...script,
+        score: score.total
     });
-}
 
-function loadHistoryItem(item) {
-    currentScript = item;
-    generator.currentSeed = item.seed;
-    
-    const voiceLang = document.getElementById('voiceLangSelect').value;
-    const apiProvider = document.getElementById('apiProvider').value;
-    
-    displayScript(item, voiceLang, apiProvider);
-    
-    if (item.score) {
-        const scoreObj = {
-            total: item.score,
-            breakdown: {
-                shock: 90,
-                visual: 85,
-                weird: 88,
-                loop: 92,
-                emotion: 87
-            }
-        };
-        displayAnalytics(scoreObj);
-    }
-    
-    showToast('📚 Loaded from history', 'info');
-}
+    displayHistory();
 
-function clearHistoryConfirm() {
-    if (confirm('Clear all history? This cannot be undone.')) {
-        storage.clearHistory();
-        displayHistory();
-        showToast('🗑️ History cleared', 'info');
-    }
+    showToast('✅ Script remixed!');
 }
 
 function copyScript() {
     if (!currentScript) {
-        showToast('⚠️ No script to copy', 'warning');
+        showToast('⚠️ No script to copy');
         return;
     }
 
     const text = formatScriptForExport(currentScript);
     
     navigator.clipboard.writeText(text).then(() => {
-        showToast('📋 Copied to clipboard!', 'success');
+        showToast('📋 Copied to clipboard!');
     }).catch(() => {
-        showToast('❌ Copy failed', 'error');
+        showToast('❌ Copy failed');
     });
 }
 
 function downloadScript() {
     if (!currentScript) {
-        showToast('⚠️ No script to download', 'warning');
+        showToast('⚠️ No script to download');
         return;
     }
 
@@ -387,48 +344,154 @@ function downloadScript() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = `script_${currentScript.metadata.category}_${Date.now()}.txt`;
+    a.download = `cinematic_script_${currentScript.metadata.category}_${Date.now()}.txt`;
     a.click();
     
     URL.revokeObjectURL(url);
-    showToast('💾 Downloaded!', 'success');
+    showToast('💾 Downloaded!');
 }
 
 function formatScriptForExport(script) {
-    let text = `SHORTCIRCUIT STUDIO V13 - VIRAL SCRIPT\n`;
-    text += `${'='.repeat(50)}\n\n`;
+    let text = `SHORTCIRCUIT STUDIO V13 — CINEMATIC SCRIPT\n`;
+    text += `${'='.repeat(80)}\n\n`;
     
     text += `CATEGORY: ${script.metadata.category}\n`;
-    text += `TONE: ${script.seed.tone}\n`;
+    text += `TONE: ${script.masterPrompt.tone}\n`;
+    text += `VISUAL STYLE: ${script.masterPrompt.visualStyle}\n`;
+    text += `LIGHTING: ${script.masterPrompt.lighting}\n`;
     text += `GENERATED: ${new Date(script.metadata.generatedAt).toLocaleString()}\n\n`;
     
-    text += `CONSISTENCY SEED:\n`;
-    text += `- Object: ${script.seed.primaryObject}\n`;
-    text += `- Location: ${script.seed.location}\n`;
-    text += `- Palette: ${script.seed.palette}\n`;
-    text += `- Sound: ${script.seed.ambientSound}\n`;
-    text += `- Emotion Arc: ${script.seed.emotionArc.join(' → ')}\n\n`;
-    
-    text += `MUSIC: ${script.music}\n`;
-    text += `${audio.getMusicCue(script.music)}\n\n`;
+    text += `MASTER PROMPT — APPLY TO ALL CLIPS:\n`;
+    text += `${'─'.repeat(80)}\n`;
+    text += `Object: ${script.masterPrompt.primaryObject}\n`;
+    text += `Location: ${script.masterPrompt.location}\n`;
+    text += `Visual Style: ${script.masterPrompt.visualStyle}\n`;
+    text += `Lighting: ${script.masterPrompt.lighting}\n`;
+    text += `Color Palette: ${script.masterPrompt.colorPalette.primary} + ${script.masterPrompt.colorPalette.secondary}\n`;
+    text += `Aspect Ratio: ${script.masterPrompt.aspectRatio}\n`;
+    text += `Resolution: ${script.masterPrompt.resolution}\n`;
+    text += `FPS: ${script.masterPrompt.fps}\n`;
+    text += `Emotional Arc: ${script.masterPrompt.emotionArc.join(' → ')}\n\n`;
     
     script.clips.forEach((clip, index) => {
-        text += `${'─'.repeat(50)}\n`;
-        text += `CLIP ${index + 1} (${index * 8}-${(index + 1) * 8}s)\n`;
-        text += `${'─'.repeat(50)}\n`;
-        text += `${clip.text}\n\n`;
-        text += `Visual: ${clip.visualCue}\n`;
-        text += `Sound: ${clip.soundCue}\n`;
-        text += `Emotion: ${clip.emotion}\n\n`;
+        text += `${'='.repeat(80)}\n`;
+        text += `CLIP ${index + 1}: ${clip.title}\n`;
+        text += `Duration: ${clip.duration}\n`;
+        text += `${'='.repeat(80)}\n\n`;
+        
+        text += `SCENE DESCRIPTION:\n${clip.sceneDescription}\n\n`;
+        
+        text += `CAMERA:\n`;
+        text += `  Angle: ${clip.camera.angle}\n`;
+        text += `  Movement: ${clip.camera.movement}\n`;
+        text += `  Framing: ${clip.camera.framing}\n`;
+        text += `  Focus: ${clip.camera.focus}\n`;
+        text += `  Transition: ${clip.camera.transition}\n\n`;
+        
+        text += `LIGHTING:\n`;
+        text += `  Setup: ${clip.lighting.setup}\n`;
+        text += `  Direction: ${clip.lighting.direction}\n`;
+        text += `  Mood: ${clip.lighting.mood}\n`;
+        text += `  Shadows: ${clip.lighting.shadows}\n`;
+        text += `  Practical: ${clip.lighting.practical}\n\n`;
+        
+        text += `ACTION:\n${clip.action}\n\n`;
+        
+        text += `AUDIO:\n`;
+        if (clip.audio.type === 'dialogue') {
+            clip.audio.lines.forEach(line => {
+                text += `  ${line.character}: "${line.text}"\n`;
+            });
+            text += `  Music: ${clip.audio.musicUnderscore}\n`;
+        } else if (clip.audio.type === 'narration') {
+            text += `  Narrator: "${clip.audio.script}"\n`;
+            text += `  Music: ${clip.audio.musicUnderscore}\n`;
+        } else {
+            text += `  Music: ${clip.audio.track}\n`;
+            text += `  SFX: ${clip.audio.soundEffects}\n`;
+        }
+        text += `\n`;
+        
+        text += `AI VIDEO PROMPT:\n${clip.aiPrompt}\n\n`;
+        
+        text += `EMOTIONAL BEAT: ${clip.emotion}\n\n`;
     });
     
     return text;
 }
 
-function showToast(message, type = 'info') {
+function displayHistory() {
+    const container = document.getElementById('historyList');
+    const history = storage.getHistory();
+
+    if (history.length === 0) {
+        container.innerHTML = '<p style="padding: 2rem; text-align: center; color: var(--text-secondary);">No scripts yet</p>';
+        return;
+    }
+
+    container.innerHTML = '';
+
+    history.forEach((item, index) => {
+        if (index >= 10) return; // Show only 10 recent
+
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        
+        const date = new Date(item.timestamp);
+        const dateStr = date.toLocaleDateString();
+        
+        div.innerHTML = `
+            <div class="history-category">${item.metadata.category}</div>
+            <div class="history-date">${dateStr}</div>
+        `;
+        
+        div.addEventListener('click', () => loadHistoryItem(item));
+        container.appendChild(div);
+    });
+}
+
+function loadHistoryItem(item) {
+    currentScript = item;
+    generator.currentSeed = item.masterPrompt;
+    
+    displayScript(item);
+    
+    if (item.score) {
+        displayScore({ total: item.score });
+    }
+    
+    document.getElementById('currentCategory').textContent = item.metadata.category;
+    document.getElementById('currentSpecs').textContent = `${item.masterPrompt.tone} • ${item.masterPrompt.visualStyle}`;
+    
+    showToast('📚 Loaded from history');
+}
+
+function clearHistoryConfirm() {
+    if (confirm('Clear all history? This cannot be undone.')) {
+        storage.clearHistory();
+        displayHistory();
+        showToast('🗑️ History cleared');
+    }
+}
+
+function toggleTheme() {
+    const current = document.body.getAttribute('data-theme');
+    const newTheme = current === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+    storage.save('theme', newTheme);
+    showToast(newTheme === 'dark' ? '🌙 Dark mode' : '☀️ Light mode');
+}
+
+function toggleHistory() {
+    const panel = document.getElementById('historyPanel');
+    const btn = document.getElementById('collapseHistory');
+    panel.classList.toggle('collapsed');
+    btn.textContent = panel.classList.contains('collapsed') ? '+' : '−';
+}
+
+function showToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
-    toast.className = `toast ${type}`;
     toast.classList.add('show');
     
     setTimeout(() => {
