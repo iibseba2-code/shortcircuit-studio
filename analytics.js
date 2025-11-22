@@ -15,64 +15,48 @@ class AnalyticsEngine {
             scores.loop * 0.20 +
             scores.emotion * 0.15;
 
-        return {
-            total: Math.round(total),
-            breakdown: scores
-        };
+        return Math.round(total);
     }
 
     scoreShock(script) {
-        const clip1 = script.clips[0];
-        const shockWords = ['impossible', 'suddenly', 'never', 'glows', 'reveals'];
+        const clip1 = script.clips[0].prompt.toLowerCase();
+        const shockWords = ['suddenly', 'impossible', 'dramatic', 'shock', 'reveals'];
         let score = 75;
-        
-        const text = clip1.sceneDescription + clip1.action;
         shockWords.forEach(word => {
-            if (text.toLowerCase().includes(word)) score += 5;
+            if (clip1.includes(word)) score += 5;
         });
-        
         return Math.min(100, score);
     }
 
     scoreVisual(script) {
         let score = 80;
-        script.clips.forEach(clip => {
-            if (clip.camera && clip.lighting) score += 5;
-            if (clip.aiPrompt && clip.aiPrompt.length > 100) score += 5;
-        });
+        if (script.clips.every(c => c.prompt.length > 200)) score += 10;
+        if (script.clips.every(c => c.prompt.includes('9:16'))) score += 10;
         return Math.min(100, score);
     }
 
     scoreWeird(script) {
-        const weirdWords = ['impossible', 'distorts', 'reality', 'physics', 'transforms'];
+        const weirdWords = ['impossible', 'distort', 'surreal', 'defying', 'reality'];
         let score = 70;
-        
         script.clips.forEach(clip => {
             weirdWords.forEach(word => {
-                if (clip.sceneDescription.toLowerCase().includes(word)) score += 3;
+                if (clip.prompt.toLowerCase().includes(word)) score += 5;
             });
         });
-        
         return Math.min(100, score);
     }
 
     scoreLoop(script) {
-        const clip1 = script.clips[0].sceneDescription.toLowerCase();
-        const clip3 = script.clips[2].sceneDescription.toLowerCase();
-        
-        const commonWords = clip1.split(' ').filter(word => 
-            clip3.includes(word) && word.length > 4
-        );
-        
-        return Math.min(100, 75 + (commonWords.length * 5));
+        const clip1Words = script.clips[0].prompt.toLowerCase().split(' ');
+        const clip3Words = script.clips[2].prompt.toLowerCase().split(' ');
+        const common = clip1Words.filter(w => clip3Words.includes(w) && w.length > 5);
+        return Math.min(100, 70 + (common.length * 2));
     }
 
     scoreEmotion(script) {
         let score = 75;
-        script.clips.forEach(clip => {
-            if (clip.emotion) score += 5;
-            if (clip.audio) score += 5;
-        });
+        if (script.clips.every(c => c.emotion)) score += 15;
+        if (script.clips.every(c => c.music)) score += 10;
         return Math.min(100, score);
     }
 }
