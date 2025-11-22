@@ -12,12 +12,12 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <span class="logo-icon">🎬</span>
+                <span class="logo-icon">⚡</span>
                 <h1>ShortCircuit<br><span>Studio v13</span></h1>
             </div>
 
             <div class="control-group">
-                <label>📂 Category</label>
+                <label>📂 Category (30 Viral Types)</label>
                 <select id="categorySelect">
                     <option value="">Choose category...</option>
                 </select>
@@ -36,11 +36,11 @@
             </div>
 
             <div class="control-group">
-                <label>🗣️ Audio Type</label>
+                <label>🗣️ Audio Mode</label>
                 <select id="audioType">
+                    <option value="none">None (Music Only)</option>
                     <option value="voiceover">Voiceover</option>
                     <option value="dialogue">Dialogue</option>
-                    <option value="music">Music Only</option>
                 </select>
             </div>
 
@@ -48,7 +48,7 @@
                 <label>🌍 Language</label>
                 <select id="language">
                     <option value="en">English</option>
-                    <option value="bn">Bangla</option>
+                    <option value="bn">Bangla (বাংলা)</option>
                 </select>
             </div>
 
@@ -56,10 +56,19 @@
             <button class="btn-secondary" id="remixBtn">🔄 Remix</button>
 
             <div class="sidebar-footer">
+                <div class="timing-info">
+                    <h4>⏰ Best Upload Times</h4>
+                    <div class="time-row">
+                        <span>EST:</span> <span id="currentEST">--:--</span>
+                    </div>
+                    <div class="time-row">
+                        <span>BST:</span> <span id="currentBST">--:--</span>
+                    </div>
+                </div>
                 <button class="btn-small" id="clearHistory">🗑️ Clear History</button>
                 <button class="btn-small" id="themeToggle">🌙 Theme</button>
                 <div class="status">
-                    <span class="status-dot"></span> <span id="statusText">Ready</span>
+                    <span class="status-dot"></span> Ready
                 </div>
             </div>
         </aside>
@@ -70,8 +79,8 @@
             <!-- Header -->
             <header class="header">
                 <div>
-                    <h2 id="projectTitle">Viral Video Script Generator</h2>
-                    <p id="projectSpecs">3 clips × 8 seconds = 24 second viral video</p>
+                    <h2 id="projectTitle">24-Second Viral Script Generator</h2>
+                    <p id="projectSpecs">3 clips × 8 seconds = Perfect viral video</p>
                 </div>
                 <div class="header-actions">
                     <div class="score-badge" id="scoreBadge" style="display: none;">
@@ -88,26 +97,33 @@
                 
                 <!-- Placeholder -->
                 <div class="placeholder" id="placeholder">
-                    <div class="placeholder-icon">🎬</div>
-                    <h3>Professional Viral Video Script Generator</h3>
+                    <div class="placeholder-icon">⚡</div>
+                    <h3>ShortCircuit Studio v13</h3>
+                    <h4>Consistent Viral Script Generator</h4>
                     <div class="features">
-                        <div class="feature">✓ 30 viral categories with proven engagement</div>
-                        <div class="feature">✓ Complete AI-ready prompts for each clip</div>
-                        <div class="feature">✓ Visual consistency across all 3 clips</div>
-                        <div class="feature">✓ Voiceover scripts in English & Bangla</div>
-                        <div class="feature">✓ Ready for RunwayML, Pika, Midjourney, Leonardo</div>
-                        <div class="feature">✓ 5 viral rules embedded in every script</div>
+                        <div class="feature">✓ <strong>5 Viral Rules</strong> embedded in every script</div>
+                        <div class="feature">✓ <strong>Consistency Seed System</strong> for visual continuity</div>
+                        <div class="feature">✓ <strong>30 Low-Competition Categories</strong></div>
+                        <div class="feature">✓ <strong>Bangla & English</strong> voiceover support</div>
+                        <div class="feature">✓ <strong>Upload Timing</strong> for USA (EST) & Bangladesh (BST)</div>
+                        <div class="feature">✓ <strong>Copy-paste ready</strong> for AI video tools</div>
                     </div>
-                    <p class="hint">👈 Select category and tone, then click Generate</p>
+                    <p class="hint">👈 Select category and click Generate</p>
                 </div>
 
                 <!-- Generated Script -->
                 <div class="script-display" id="scriptDisplay" style="display: none;"></div>
             </div>
 
+            <!-- Upload Timing Card -->
+            <div class="timing-card" id="timingCard" style="display: none;">
+                <h3>⏰ Optimal Upload Times</h3>
+                <div class="timing-grid" id="timingGrid"></div>
+            </div>
+
             <!-- History Bar -->
             <div class="history-bar" id="historyBar">
-                <h4>📚 Recent Scripts (Click to reload)</h4>
+                <h4>📚 Recent Scripts (Last 30)</h4>
                 <div class="history-items" id="historyItems"></div>
             </div>
         </main>
