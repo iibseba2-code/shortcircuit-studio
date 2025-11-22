@@ -3,187 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShortCircuit Studio v13 — Cinematic Script Generator</title>
+    <title>ShortCircuit Studio v13 — Viral Script Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Main Container -->
     <div class="app-container">
         
-        <!-- Left Sidebar - All Controls -->
+        <!-- Left Sidebar - Controls Only -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">🎬</span>
-                    <h1>ShortCircuit<br><span>Studio v13</span></h1>
-                </div>
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <h1>ShortCircuit<br><span>Studio v13</span></h1>
             </div>
 
-            <!-- Category Selection -->
-            <div class="control-section">
-                <label class="control-label">📂 Video Category</label>
-                <select id="categorySelect" class="control-input">
-                    <option value="">Choose category...</option>
+            <div class="control-group">
+                <label>📂 Category</label>
+                <select id="categorySelect">
+                    <option value="">Choose...</option>
                 </select>
             </div>
 
-            <!-- Tone -->
-            <div class="control-section">
-                <label class="control-label">🎭 Emotional Tone</label>
-                <select id="toneSelect" class="control-input">
+            <div class="control-group">
+                <label>🎭 Tone</label>
+                <select id="toneSelect">
                     <option>Cinematic Epic</option>
                     <option>Dark Mystery</option>
                     <option>Warm Emotional</option>
                     <option>Surreal Dream</option>
                     <option>Horror Tension</option>
                     <option>Comedy Bright</option>
-                    <option>Sci-Fi Future</option>
-                    <option>Fantasy Magic</option>
                 </select>
             </div>
 
-            <!-- Visual Style -->
-            <div class="control-section">
-                <label class="control-label">🎨 Visual Style</label>
-                <select id="visualStyle" class="control-input">
+            <div class="control-group">
+                <label>🎨 Visual Style</label>
+                <select id="visualStyle">
                     <option>Hyper Realistic</option>
                     <option>Cinematic Film</option>
-                    <option>Anime Studio</option>
+                    <option>Anime Style</option>
                     <option>3D Pixar</option>
-                    <option>Oil Painting</option>
-                    <option>Noir Black & White</option>
                 </select>
             </div>
 
-            <!-- Camera Style -->
-            <div class="control-section">
-                <label class="control-label">📹 Camera Movement</label>
-                <select id="cameraStyle" class="control-input">
-                    <option>Dynamic Tracking</option>
-                    <option>Static Cinematic</option>
-                    <option>Handheld POV</option>
-                    <option>Aerial Drone</option>
-                    <option>Slow Motion</option>
-                    <option>Time Lapse</option>
-                </select>
-            </div>
-
-            <!-- Lighting -->
-            <div class="control-section">
-                <label class="control-label">💡 Lighting Setup</label>
-                <select id="lightingSetup" class="control-input">
-                    <option>Golden Hour Warm</option>
-                    <option>Blue Hour Cool</option>
+            <div class="control-group">
+                <label>💡 Lighting</label>
+                <select id="lightingSetup">
+                    <option>Golden Hour</option>
+                    <option>Blue Hour</option>
                     <option>Neon Night</option>
                     <option>Soft Studio</option>
-                    <option>Hard Dramatic</option>
-                    <option>Natural Daylight</option>
-                    <option>Moody Dark</option>
+                    <option>Dramatic Dark</option>
                 </select>
             </div>
 
-            <!-- Audio Type -->
-            <div class="control-section">
-                <label class="control-label">🎵 Audio Type</label>
-                <select id="audioType" class="control-input">
-                    <option value="dialogue">Dialogue + Music</option>
+            <div class="control-group">
+                <label>🗣️ Audio Type</label>
+                <select id="audioType">
+                    <option value="voiceover">Voiceover</option>
+                    <option value="dialogue">Dialogue</option>
                     <option value="music">Music Only</option>
-                    <option value="narration">Voice Narration</option>
                 </select>
             </div>
 
-            <!-- Voice Language -->
-            <div class="control-section">
-                <label class="control-label">🗣️ Voice Language</label>
-                <select id="voiceLanguage" class="control-input">
+            <div class="control-group">
+                <label>🌍 Language</label>
+                <select id="language">
                     <option value="en">English</option>
                     <option value="bn">Bangla</option>
                 </select>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="generateBtn">
-                    ✨ Generate Script
-                </button>
-                <button class="btn btn-secondary" id="remixBtn">
-                    🔄 Remix Scene
-                </button>
-            </div>
+            <button class="btn-primary" id="generateBtn">✨ Generate Script</button>
+            <button class="btn-secondary" id="remixBtn">🔄 Remix</button>
 
-            <!-- Settings -->
-            <div class="control-section" style="margin-top: auto; padding-top: 2rem; border-top: 1px solid var(--border);">
-                <label class="control-label">⚙️ Settings</label>
-                <button class="btn btn-small" id="clearHistory">🗑️ Clear History</button>
-                <button class="btn btn-small" id="themeToggle">🌙 Toggle Theme</button>
-            </div>
-
-            <!-- Status -->
             <div class="sidebar-footer">
-                <div class="status-indicator">
-                    <span class="status-dot"></span>
-                    <span>System Ready</span>
+                <button class="btn-small" id="clearHistory">🗑️ Clear History</button>
+                <button class="btn-small" id="themeToggle">🌙 Theme</button>
+                <div class="status">
+                    <span class="status-dot"></span> Ready
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content Area -->
+        <!-- Main Content - Script Display -->
         <main class="main-content">
             
-            <!-- Header Bar -->
-            <header class="content-header">
-                <div class="header-info">
-                    <h2 id="currentCategory">Ready to Generate</h2>
-                    <p id="currentSpecs">Select category and click Generate</p>
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h2 id="projectTitle">Ready to Generate</h2>
+                    <p id="projectSpecs">Select options and click Generate</p>
                 </div>
                 <div class="header-actions">
-                    <button class="icon-btn" id="copyBtn" title="Copy Script">📋</button>
-                    <button class="icon-btn" id="downloadBtn" title="Download TXT">💾</button>
                     <div class="score-badge" id="scoreBadge" style="display: none;">
-                        <span class="score-label">Viral Score</span>
-                        <span class="score-value" id="scoreValue">--</span>
+                        <span>Viral Score</span>
+                        <strong id="scoreValue">--</strong>
                     </div>
+                    <button class="icon-btn" id="copyAllBtn" title="Copy All">📋 Copy All</button>
+                    <button class="icon-btn" id="downloadBtn" title="Download">💾 Download</button>
                 </div>
             </header>
 
-            <!-- Script Display Area -->
-            <div class="script-area" id="scriptArea">
+            <!-- Script Container -->
+            <div class="script-container" id="scriptContainer">
                 
                 <!-- Placeholder -->
                 <div class="placeholder" id="placeholder">
                     <div class="placeholder-icon">🎬</div>
-                    <h3>Professional Cinematic Script Generator</h3>
-                    <p>Generate ultra-detailed, AI-ready video scripts with:</p>
-                    <ul class="feature-list">
-                        <li>✓ Detailed camera angles & movements</li>
-                        <li>✓ Professional lighting setups</li>
-                        <li>✓ Character dialogues & actions</li>
-                        <li>✓ Consistent visual style across all clips</li>
-                        <li>✓ Ready for RunwayML, Pika, Midjourney</li>
-                    </ul>
-                    <p class="hint">👈 Select options from sidebar and click Generate</p>
+                    <h3>Professional Viral Video Script Generator</h3>
+                    <div class="features">
+                        <div class="feature">✓ Core Consistent Prompt for all scenes</div>
+                        <div class="feature">✓ Detailed camera angles & movements</div>
+                        <div class="feature">✓ Professional lighting & visuals</div>
+                        <div class="feature">✓ Voiceover scripts & music cues</div>
+                        <div class="feature">✓ Ready for RunwayML, Pika, Midjourney</div>
+                    </div>
+                    <p class="hint">👈 Configure settings and click Generate</p>
                 </div>
 
                 <!-- Generated Script -->
-                <div class="script-content" id="scriptContent" style="display: none;"></div>
+                <div class="script-display" id="scriptDisplay" style="display: none;"></div>
             </div>
 
-            <!-- History Section -->
-            <div class="history-panel" id="historyPanel">
-                <div class="history-header">
-                    <h3>📚 Recent Scripts</h3>
-                    <button class="collapse-btn" id="collapseHistory">−</button>
-                </div>
-                <div class="history-list" id="historyList"></div>
+            <!-- History -->
+            <div class="history-bar" id="historyBar">
+                <h4>📚 Recent Scripts</h4>
+                <div class="history-items" id="historyItems"></div>
             </div>
-
         </main>
     </div>
 
-    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
-    <!-- Scripts -->
     <script src="categories.js"></script>
     <script src="storage.js"></script>
     <script src="analytics.js"></script>
