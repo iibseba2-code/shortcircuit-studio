@@ -9,7 +9,7 @@
 <body>
     <div class="app-container">
         
-        <!-- Left Sidebar - Controls Only -->
+        <!-- Sidebar - Minimal Controls -->
         <aside class="sidebar">
             <div class="logo">
                 <span class="logo-icon">🎬</span>
@@ -19,7 +19,7 @@
             <div class="control-group">
                 <label>📂 Category</label>
                 <select id="categorySelect">
-                    <option value="">Choose...</option>
+                    <option value="">Choose category...</option>
                 </select>
             </div>
 
@@ -32,27 +32,6 @@
                     <option>Surreal Dream</option>
                     <option>Horror Tension</option>
                     <option>Comedy Bright</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>🎨 Visual Style</label>
-                <select id="visualStyle">
-                    <option>Hyper Realistic</option>
-                    <option>Cinematic Film</option>
-                    <option>Anime Style</option>
-                    <option>3D Pixar</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>💡 Lighting</label>
-                <select id="lightingSetup">
-                    <option>Golden Hour</option>
-                    <option>Blue Hour</option>
-                    <option>Neon Night</option>
-                    <option>Soft Studio</option>
-                    <option>Dramatic Dark</option>
                 </select>
             </div>
 
@@ -78,33 +57,33 @@
 
             <div class="sidebar-footer">
                 <button class="btn-small" id="clearHistory">🗑️ Clear History</button>
-                <button class="btn-small" id="themeToggle">🌙 Theme</button>
+                <button class="btn-small" id="themeToggle">🌙 Toggle Theme</button>
                 <div class="status">
                     <span class="status-dot"></span> Ready
                 </div>
             </div>
         </aside>
 
-        <!-- Main Content - Script Display -->
+        <!-- Main Content -->
         <main class="main-content">
             
             <!-- Header -->
             <header class="header">
                 <div>
-                    <h2 id="projectTitle">Ready to Generate</h2>
-                    <p id="projectSpecs">Select options and click Generate</p>
+                    <h2 id="projectTitle">Ready to Generate Viral Script</h2>
+                    <p id="projectSpecs">3 clips × 8 seconds = 24 second viral video</p>
                 </div>
                 <div class="header-actions">
                     <div class="score-badge" id="scoreBadge" style="display: none;">
                         <span>Viral Score</span>
                         <strong id="scoreValue">--</strong>
                     </div>
-                    <button class="icon-btn" id="copyAllBtn" title="Copy All">📋 Copy All</button>
-                    <button class="icon-btn" id="downloadBtn" title="Download">💾 Download</button>
+                    <button class="icon-btn" id="copyAllBtn">📋 Copy All</button>
+                    <button class="icon-btn" id="downloadBtn">💾 Download</button>
                 </div>
             </header>
 
-            <!-- Script Container -->
+            <!-- Script Display -->
             <div class="script-container" id="scriptContainer">
                 
                 <!-- Placeholder -->
@@ -112,20 +91,20 @@
                     <div class="placeholder-icon">🎬</div>
                     <h3>Professional Viral Video Script Generator</h3>
                     <div class="features">
-                        <div class="feature">✓ Core Consistent Prompt for all scenes</div>
-                        <div class="feature">✓ Detailed camera angles & movements</div>
-                        <div class="feature">✓ Professional lighting & visuals</div>
-                        <div class="feature">✓ Voiceover scripts & music cues</div>
+                        <div class="feature">✓ 3 scenes with complete AI-ready prompts</div>
+                        <div class="feature">✓ Visual consistency across all clips</div>
+                        <div class="feature">✓ Voiceover scripts included</div>
+                        <div class="feature">✓ Copy individual clips or entire script</div>
                         <div class="feature">✓ Ready for RunwayML, Pika, Midjourney</div>
                     </div>
-                    <p class="hint">👈 Configure settings and click Generate</p>
+                    <p class="hint">👈 Select category and tone, then click Generate</p>
                 </div>
 
                 <!-- Generated Script -->
                 <div class="script-display" id="scriptDisplay" style="display: none;"></div>
             </div>
 
-            <!-- History -->
+            <!-- History Bar -->
             <div class="history-bar" id="historyBar">
                 <h4>📚 Recent Scripts</h4>
                 <div class="history-items" id="historyItems"></div>
