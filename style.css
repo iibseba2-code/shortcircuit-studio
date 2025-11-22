@@ -500,4 +500,48 @@ body {
 }
 
 .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ==================== SCROLLBAR ==================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff6b9d;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
     
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 50vh;
+    }
+    
+    .script-container {
+        padding: 1rem;
+    }
+    
+    .clip-card {
+        padding: 1.5rem;
+    }
+}
